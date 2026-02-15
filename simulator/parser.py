@@ -1,0 +1,38 @@
+def validate_alphabet(alphabet):
+    return (all(len(char) == 1 for char in alphabet))
+
+def validate_machine(data):
+    set_states = set(data['states'])
+    set_alphabet = set(data['alphabet'])
+    valid_actions = {'LEFT', 'RIGHT'}
+
+    checks = [
+        # Alphabet characters are single characters
+        all(len(char) == 1 for char in data['alphabet']),
+
+        # Blank symbol is part of the alphabet
+        data['blank'] in set_alphabet,
+
+        # Initial state is part of the states
+        data['initial'] in set_states,
+
+        # Final states are a sub-list of states
+        all(state in set_states for state in data['finals']),
+
+        # 5. Transitions logic check
+        all(
+            # Key must be a valid state 
+            state in set_states and 
+            # Each rule in that state must be valid 
+            all(
+                trans['read'] in set_alphabet and
+                trans['write'] in set_alphabet and
+                trans['to_state'] in set_states and
+                trans['action'] in valid_actions
+                for trans in rules
+            )
+            for state, rules in data['transitions'].items()
+        )
+    ]
+    
+    return all(checks)
