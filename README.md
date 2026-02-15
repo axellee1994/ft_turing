@@ -35,28 +35,28 @@ The goal is to write a program capable of simulating a Turing machine from a mac
 
 ## Generic Rules
 
-- [cite_start]You are free to use any language and its basic libraries.
-- [cite_start]Libraries that "do all the work for you" are forbidden.
-- [cite_start]You must not rely on imperative style; use constants and anonymous functions. 
-- [cite_start]If using OCaml, a Makefile must be provided to handle compilation and OPAM dependencies.
+- You are free to use any language and its basic libraries.
+- Libraries that "do all the work for you" are forbidden.
+- You must not rely on imperative style; use constants and anonymous functions. 
+- If using OCaml, a Makefile must be provided to handle compilation and OPAM dependencies.
 
 ---
 
 ## Mandatory Part
 
 ### The Simulator
-[cite_start]The program must simulate a Turing machine based on a JSON parameter.
-- [cite_start]**Usage:** `./ft_turing [-h] jsonfile input`
-- [cite_start]**Output:** The program must display the state of the tape and the head position at each transition.
-- [cite_start]**Robustness:** The program must detect and reject invalid descriptions and never crash.
+The program must simulate a Turing machine based on a JSON parameter.
+- **Usage:** `./ft_turing [-h] jsonfile input`
+- **Output:** The program must display the state of the tape and the head position at each transition.
+- **Robustness:** The program must detect and reject invalid descriptions and never crash.
 
 ### Machine Descriptions
-[cite_start]You must provide 5 JSON machine descriptions:
-1. [cite_start]**Unary addition.**
-2. [cite_start]**Palindrome decider** (writes 'y' or 'n' on the tape).
-3. [cite_start]**$0^n1^n$ language decider** (writes 'y' or 'n' on the tape).
-4. [cite_start]**$0^{2n}$ language decider** (writes 'y' or 'n' on the tape).
-5. [cite_start]**Universal machine:** A machine that runs the first machine (unary addition).
+You must provide 5 JSON machine descriptions:
+1. **Unary addition.**
+2. **Palindrome decider** (writes 'y' or 'n' on the tape).
+3. **$0^n1^n$ language decider** (writes 'y' or 'n' on the tape).
+4. **$0^{2n}$ language decider** (writes 'y' or 'n' on the tape).
+5. **Universal machine:** A machine that runs the first machine (unary addition).
 
 ---
 
