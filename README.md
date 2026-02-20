@@ -1,65 +1,103 @@
 # ft_turing
 
-**Summary:** This project is a functional implementation of a single infinite tape Turing machine.
+A functional implementation of a single infinite tape Turing machine in Python.
+This project is part of the 42 curriculum.
 
-**Version:** 3.2
+## Description
 
-## Table of Contents
+The goal of this project is to simulate a Turing machine based on a JSON configuration file. The implementation respects the functional programming paradigm, preferring recursion and iterators over imperative loops.
 
-- [Forewords](#forewords)
-- [Introduction](#introduction)
-- [Objectives](#objectives)
-- [Generic Rules](#generic-rules)
-- [Mandatory Part](#mandatory-part)
-- [Submission and Peer-Evaluation](#submission-and-peer-evaluation)
+The program reads a machine description from a JSON file and an input string, then simulates the machine execution step by step, displaying the state of the tape and the head position at each transition.
 
----
+## Features
 
-## Forewords
+- **Functional Architecture**: Built using recursion and functional constructs.
+- **JSON Configuration**: Machines are defined in easy-to-read JSON files.
+- **Infinite Tape**: Simulation of a single infinite tape (extends dynamically).
+- **Stepped Output**: Detailed visualization of the machine state at every step.
 
-Alan Mathison Turing was a British pioneering computer scientist and mathematician who provided a formalisation of the concepts of algorithm and computation with the Turing machine.He is widely considered the father of theoretical computer science and artificial intelligence.
+## Installation
 
----
+Clone the repository:
 
-## Introduction
+```bash
+git clone https://github.com/StartInB/ft_turing.git
+cd ft_turing
+```
 
-The Turing machine is a mathematical model that is fairly easy to understand and implement.This project involves creating a functional implementation of such a machine with a single infinite tape.
+No external dependencies are required. The project runs with standard Python 3.
 
----
+## Usage
 
-## Objectives
+Run the simulator with a machine description and an input string:
 
-The goal is to write a program capable of simulating a Turing machine from a machine description provided in JSON.The project must be written respecting the functional paradigm. Iterators like `map`, `fold`, or `filter` are preferred over imperative loops.
+```bash
+# General syntax
+python3 ft_turing.py [-h] jsonfile input
+```
 
----
+### Arguments
 
-## Generic Rules
+- `jsonfile`: Path to the JSON file describing the machine.
+- `input`: The initial input string for the tape.
+- `-h, --help`: Show help message.
 
-- You are free to use any language and its basic libraries.
-- Libraries that "do all the work for you" are forbidden.
-- You must not rely on imperative style; use constants and anonymous functions. 
-- If using OCaml, a Makefile must be provided to handle compilation and OPAM dependencies.
+### Example
 
----
+To run the unary addition machine:
 
-## Mandatory Part
+```bash
+python3 ft_turing.py machines/unary_add.json "111.11"
+```
 
-### The Simulator
-The program must simulate a Turing machine based on a JSON parameter.
-- **Usage:** `./ft_turing [-h] jsonfile input`
-- **Output:** The program must display the state of the tape and the head position at each transition.
-- **Robustness:** The program must detect and reject invalid descriptions and never crash.
+## Included Machines
 
-### Machine Descriptions
-You must provide 5 JSON machine descriptions:
-1. **Unary addition.**
-2. **Palindrome decider** (writes 'y' or 'n' on the tape).
-3. **$0^n1^n$ language decider** (writes 'y' or 'n' on the tape).
-4. **$0^{2n}$ language decider** (writes 'y' or 'n' on the tape).
-5. **Universal machine:** A machine that runs the first machine (unary addition).
+The `machines/` directory contains several example Turing machine configurations:
 
----
+- **`unary_add.json`**: Performs unary addition (e.g., `11.111` becomes `11111`).
+- **`unary_sub.json`**: Performs unary subtraction (e.g., `11-1=` becomes `1`).
+- **`palindrome.json`**: Decides if the input is a palindrome (writes `y` or `n`).
+- **`0n1n.json`**: Decides the language $0^n1^n$ (writes `y` or `n`).
+- **`02n.json`**: Decides the language $0^{2n}$ (writes `y` or `n`).
+- **`universal.json`**: A Universal Turing Machine capable of simulating other machines.
 
-## Submission and Peer-Evaluation
+## Testing
 
-Turn in your assignment in your Git repository.Only the work inside the repository will be evaluated during the defense.Ensure your folders and files are correctly named.
+A `Makefile` is provided for running tests on the included machines.
+
+```bash
+make run              # Runs default command
+make test_unary_add   # Tests unary addition
+make test_unary_sub   # Tests unary subtraction
+make test_palindrome  # Tests palindrome machine
+make test_0n1n        # Tests 0n1n machine
+make test_02n         # Tests 02n machine
+make test_universal   # Tests universal machine
+```
+
+To cleanup compiled python files:
+
+```bash
+make clean
+```
+
+## Machine Definition Format
+
+Machines are defined in JSON with the following structure:
+
+```json
+{
+    "name": "unary_add",
+    "alphabet": [ "1", ".", "y", "n" ],
+    "blank": ".",
+    "states": [ "scanright", "addone", "HALT" ],
+    "initial": "scanright",
+    "finals": [ "HALT" ],
+    "transitions": {
+        "scanright": [
+            { "read": "1", "to_state": "scanright", "write": "1", "action": "RIGHT" },
+            { "read": ".", "to_state": "addone", "write": "1", "action": "RIGHT" }
+        ]
+    }
+}
+```
