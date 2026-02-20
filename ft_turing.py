@@ -70,8 +70,9 @@ def main():
 
     # Run the machine
     try:
-        _, total_steps = run_machine(machine_data, tape, 0, machine_data["initial"])
-        if total_steps is not None:
+        result = run_machine(machine_data, tape, 0, machine_data["initial"])
+        if result is not None:
+            _, total_steps = result
             print(f"Machine halted after {total_steps} steps.")
             print(f"First step: Initial State (Zero Index)")
             print(f"Total steps is counted by: {total_steps + 1} - 1 (since we start at step 0)")
