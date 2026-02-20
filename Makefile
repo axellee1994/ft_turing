@@ -1,4 +1,5 @@
-.PHONY: all clean test run
+# Add to .PHONY at the top
+.PHONY: all clean test run test_unary_add test_0n1n test_02n test_palindrome test_universal
 
 PYTHON := python3
 NAME := ft_turing
@@ -8,10 +9,6 @@ all: run
 
 run:
 	$(PYTHON) $(MAIN)
-
-test_unary_sub:
-	$(PYTHON) $(MAIN) -h
-	$(PYTHON) $(MAIN) machines/unary_sub.json "1-1=1" 2>&1 | head -20 || true
 
 test_0n1n:
 	$(PYTHON) $(MAIN) -h
@@ -24,6 +21,18 @@ test_02n:
 test_palindrome:
 	$(PYTHON) $(MAIN) -h
 	$(PYTHON) $(MAIN) machines/palindrome.json "0110" 2>&1 | head -20 || true
+
+test_unary_add:
+	$(PYTHON) $(MAIN) -h
+	$(PYTHON) $(MAIN) machines/unary_add.json "1+1=11" 2>&1 | head -20 || true
+
+test_unary_sub:
+	$(PYTHON) $(MAIN) -h
+	$(PYTHON) $(MAIN) machines/unary_sub.json "1-1=1" 2>&1 | head -20 || true
+
+test_universal:
+	$(PYTHON) $(MAIN) -h
+	$(PYTHON) $(MAIN) machines/universal.json "A^11.111|A11RAA.1RBB11RBB 1LCC1 LCH" 2>&1 | head -20
 
 clean:
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true

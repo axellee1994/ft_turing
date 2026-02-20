@@ -1,0 +1,84 @@
+{
+    "name": "universal_turing_machine",
+    "alphabet": ["1", ".", " ", "A", "B", "C", "H", "^", "|", "L", "R", "x", "y", "_"],
+    "blank": "_",
+    "states": [
+        "fetch_state",
+        "find_head_marker",
+        "read_virtual_char",
+        "search_rule_start",
+        "match_state",
+        "match_read_symbol",
+        "skip_write_symbol",
+        "apply_move",
+        "update_new_state",
+        "rewind",
+        "HALT"
+    ],
+    "initial": "fetch_state",
+    "finals": ["HALT"],
+    "transitions": {
+        "fetch_state": [
+            { "read": "A", "to_state": "find_head_marker", "write": "x", "action": "RIGHT" },
+            { "read": "B", "to_state": "find_head_marker", "write": "x", "action": "RIGHT" },
+            { "read": "C", "to_state": "find_head_marker", "write": "x", "action": "RIGHT" },
+            { "read": "H", "to_state": "HALT",              "write": "H", "action": "RIGHT" }
+        ],
+        "find_head_marker": [
+            { "read": "^", "to_state": "read_virtual_char", "write": "^", "action": "RIGHT" },
+            { "read": "1", "to_state": "find_head_marker",  "write": "1", "action": "RIGHT" },
+            { "read": ".", "to_state": "find_head_marker",  "write": ".", "action": "RIGHT" },
+            { "read": " ", "to_state": "find_head_marker",  "write": " ", "action": "RIGHT" }
+        ],
+        "read_virtual_char": [
+            { "read": "1", "to_state": "search_rule_start", "write": "y", "action": "RIGHT" },
+            { "read": ".", "to_state": "search_rule_start", "write": "y", "action": "RIGHT" },
+            { "read": " ", "to_state": "search_rule_start", "write": "y", "action": "RIGHT" }
+        ],
+        "search_rule_start": [
+            { "read": "|", "to_state": "match_state",       "write": "|", "action": "RIGHT" },
+            { "read": "1", "to_state": "search_rule_start",  "write": "1", "action": "RIGHT" },
+            { "read": ".", "to_state": "search_rule_start",  "write": ".", "action": "RIGHT" },
+            { "read": " ", "to_state": "search_rule_start",  "write": " ", "action": "RIGHT" }
+        ],
+        "match_state": [
+            { "read": "A", "to_state": "match_read_symbol", "write": "A", "action": "RIGHT" },
+            { "read": "B", "to_state": "match_read_symbol", "write": "B", "action": "RIGHT" },
+            { "read": "C", "to_state": "match_read_symbol", "write": "C", "action": "RIGHT" }
+        ],
+        "match_read_symbol": [
+            { "read": "1", "to_state": "skip_write_symbol", "write": "1", "action": "RIGHT" },
+            { "read": ".", "to_state": "skip_write_symbol", "write": ".", "action": "RIGHT" },
+            { "read": " ", "to_state": "skip_write_symbol", "write": " ", "action": "RIGHT" }
+        ],
+        "skip_write_symbol": [
+            { "read": "1", "to_state": "apply_move",        "write": "1", "action": "RIGHT" },
+            { "read": ".", "to_state": "apply_move",        "write": ".", "action": "RIGHT" },
+            { "read": " ", "to_state": "apply_move",        "write": " ", "action": "RIGHT" }
+        ],
+        "apply_move": [
+            { "read": "R", "to_state": "update_new_state",  "write": "R", "action": "RIGHT" },
+            { "read": "L", "to_state": "update_new_state",  "write": "L", "action": "RIGHT" }
+        ],
+        "update_new_state": [
+            { "read": "A", "to_state": "rewind",            "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind",            "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind",            "write": "C", "action": "LEFT" },
+            { "read": "H", "to_state": "HALT",              "write": "H", "action": "LEFT" }
+        ],
+        "rewind": [
+            { "read": "1", "to_state": "rewind",            "write": "1", "action": "LEFT" },
+            { "read": ".", "to_state": "rewind",            "write": ".", "action": "LEFT" },
+            { "read": " ", "to_state": "rewind",            "write": " ", "action": "LEFT" },
+            { "read": "R", "to_state": "rewind",            "write": "R", "action": "LEFT" },
+            { "read": "L", "to_state": "rewind",            "write": "L", "action": "LEFT" },
+            { "read": "A", "to_state": "rewind",            "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind",            "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind",            "write": "C", "action": "LEFT" },
+            { "read": "|", "to_state": "rewind",            "write": "|", "action": "LEFT" },
+            { "read": "y", "to_state": "rewind",            "write": "y", "action": "LEFT" },
+            { "read": "^", "to_state": "rewind",            "write": "^", "action": "LEFT" },
+            { "read": "x", "to_state": "fetch_state",       "write": "x", "action": "RIGHT" } 
+        ]
+    }
+}
