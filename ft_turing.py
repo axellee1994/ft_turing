@@ -68,9 +68,13 @@ def main():
     print(f"Running {machine_data['name']}")
     print("*" * 20)
 
-    # Run the machhine
+    # Run the machine
     try:
-        run_machine(machine_data, tape, 0, machine_data["initial"])
+        _, total_steps = run_machine(machine_data, tape, 0, machine_data["initial"])
+        if total_steps is not None:
+            print(f"Machine halted after {total_steps} steps.")
+            print(f"First step: Initial State (Zero Index)")
+            print(f"Total steps is counted by: {total_steps + 1} - 1 (since we start at step 0)")
     except RecursionError:
         print("Error: Maximum recursion depth exceeded. Possible infinite loop.")
         sys.exit(1)

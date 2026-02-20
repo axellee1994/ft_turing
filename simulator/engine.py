@@ -45,16 +45,15 @@ def print_tape_state(tape, head, state):
     # Print the final string
     print(f"[{formatted_tape}] ({state})")
 
-def run_machine(machine, tape, head, state):
+def run_machine(machine, tape, head, state, step_count=0):
     """
     Recursive driver that runs the machine until HALT or BLOCK.
     """
-    # Print current state (Required by subject)
-    print_tape_state(tape, head, state) # We need to define this later
+    print_tape_state(tape, head, state)
 
     # Check if we are in a FINAL state 
     if state in machine['finals']:
-        return tape
+        return tape, step_count
 
     # Calculate next step
     result = step(machine, tape, head, state)
@@ -65,4 +64,4 @@ def run_machine(machine, tape, head, state):
         return None
 
     new_tape, new_head, new_state = result
-    return run_machine(machine, new_tape, new_head, new_state)
+    return run_machine(machine, new_tape, new_head, new_state, step_count + 1)
