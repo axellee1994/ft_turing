@@ -24,7 +24,7 @@ test_palindrome:
 
 test_unary_add:
 	$(PYTHON) $(MAIN) -h
-	$(PYTHON) $(MAIN) machines/unary_add.json "1+1=11" 2>&1 | head -20 || true
+	$(PYTHON) $(MAIN) machines/unary_add.json "11.111" 2>&1 | head -20 || true
 
 test_unary_sub:
 	$(PYTHON) $(MAIN) -h
