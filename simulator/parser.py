@@ -1,6 +1,3 @@
-def validate_alphabet(alphabet):
-    return (all(len(char) == 1 for char in alphabet))
-
 def validate_machine(data):
     required_keys = ['name', 'alphabet', 'blank', 'states', 'initial', 'finals', 'transitions']
     if not all(key in data for key in required_keys):

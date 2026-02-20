@@ -61,6 +61,9 @@ def main():
         sys.exit(1)
 
     tape = list(input_str) if input_str else [machine_data["blank"]]
+    if not tape:
+        tape = [machine_data["blank"]]
+    
     print("*" * 20)
     print(f"Running {machine_data['name']}")
     print("*" * 20)
