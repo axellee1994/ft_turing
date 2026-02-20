@@ -2,6 +2,10 @@ def validate_alphabet(alphabet):
     return (all(len(char) == 1 for char in alphabet))
 
 def validate_machine(data):
+    required_keys = ['name', 'alphabet', 'blank', 'states', 'initial', 'finals', 'transitions']
+    if not all(key in data for key in required_keys):
+        return False
+    
     set_states = set(data['states'])
     set_alphabet = set(data['alphabet'])
     valid_actions = {'LEFT', 'RIGHT'}

@@ -3,6 +3,7 @@ import json
 from simulator.parser import validate_machine
 from simulator.engine import run_machine
 
+sys.setrecursionlimit(100000)
 
 def print_usage():
     print("usage: ft_turing [-h] jsonfile input")
