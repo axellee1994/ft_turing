@@ -11,22 +11,22 @@ run:
 	$(PYTHON) $(MAIN)
 
 test_0n1n:
-	$(PYTHON) $(MAIN) machines/0n1n.json "0011" 2>&1 | head -20 || true
+	$(PYTHON) $(MAIN) machines/0n1n.json "0011"
 
 test_02n:
-	$(PYTHON) $(MAIN) machines/02n.json "000" 2>&1 | head -20 || true
+	$(PYTHON) $(MAIN) machines/02n.json "000"
 
 test_palindrome:
-	$(PYTHON) $(MAIN) machines/palindrome.json "0110" 2>&1 | head -20 || true
+	$(PYTHON) $(MAIN) machines/palindrome.json "0110"
 
 test_unary_add:
-	$(PYTHON) $(MAIN) machines/unary_add.json "11.111" 2>&1 | head -20 || true
+	$(PYTHON) $(MAIN) machines/unary_add.json "11.111"
 
 test_unary_sub:
-	$(PYTHON) $(MAIN) machines/unary_sub.json "1-1=1" 2>&1 | head -20 || true
+	$(PYTHON) $(MAIN) machines/unary_sub.json "1-1=1"
 
 test_universal:
-	$(PYTHON) $(MAIN) machines/universal.json "A^11.111|A11RAA.1RBB11RBB 1LCC1 LCH" 2>&1 | head -20
+	$(PYTHON) $(MAIN) machines/universal.json "A^11.111|A11RAA.1RBB11RBB 1LCC1 LCH"
 
 test: test_0n1n test_02n test_palindrome test_unary_add test_unary_sub test_universal
 	$(PYTHON) $(MAIN) -h

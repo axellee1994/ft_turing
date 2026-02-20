@@ -64,9 +64,18 @@ def main():
     if not tape:
         tape = [machine_data["blank"]]
     
-    print("*" * 20)
-    print(f"Running {machine_data['name']}")
-    print("*" * 20)
+    separator = "*" * 61
+    print(separator)
+    print(f"*{machine_data['name']:^59}*")
+    print(separator)
+    print(f"Alphabet: [ {', '.join(machine_data['alphabet'])} ]")
+    print(f"States: [ {', '.join(machine_data['states'])} ]")
+    print(f"Initial: {machine_data['initial']}")
+    print(f"Finals: [ {', '.join(machine_data['finals'])} ]")
+    for state, rules in machine_data['transitions'].items():
+        for t in rules:
+            print(f"({state}, {t['read']}) -> ({t['to_state']}, {t['write']}, {t['action']})")
+    print(separator)
 
     # Run the machine
     try:
