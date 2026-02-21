@@ -5,86 +5,97 @@ from simulator.engine import run_machine
 
 sys.setrecursionlimit(100000)
 
-def print_usage():
-    print("usage: ft_turing [-h] jsonfile input")
-    print()
-    print("positional arguments:")
-    print("    jsonfile     json description of the machine")
-    print()
-    print("    input        input of the machine")
-    print()
-    print("optional arguments:")
-    print("    -h --help    show this help message and exit")
+USAGE = "\n".join([
+    "usage: ft_turing [-h] jsonfile input",
+    "",
+    "positional arguments:",
+    "  jsonfile              json description of the machine",
+    "",
+    "  input                 input of the machine",
+    "",
+    "optional arguments:",
+    "  -h, --help            show this help message and exit",
+])
+
+SEPARATOR = "*" * 61
 
 
-def main():
-    # Just argument handlers
-    args = sys.argv[1:]
-
-    if len(args) != 2:
-        if len(args) > 0 and args[0] in ["-h", "--help"]:
-            print_usage()
-            sys.exit(0)
-        print_usage()
-        sys.exit(1)
-
-    json_path = args[0]
-    input_str = args[1]
-
-    # To load the JSON file
+def load_machine(path):
+    """Returns parsed machine dict, or raises SystemExit on error."""
     try:
-        with open(json_path, "r") as f:
-            machine_data = json.load(f)
+        with open(path, "r") as f:
+            return json.load(f)
     except FileNotFoundError:
-        print(f"Error: File '{json_path}' not found.")
+        print(f"Error: File '{path}' not found.")
         sys.exit(1)
     except PermissionError:
-        print(f"Error: Permission denied for file '{json_path}'.")
+        print(f"Error: Permission denied for file '{path}'.")
         sys.exit(1)
     except json.JSONDecodeError as e:
         print(f"Error: Invalid JSON file - {e}")
         sys.exit(1)
 
-    # Validating the machine data
-    if not validate_machine(machine_data):
+
+def format_transition(state, t):
+    return f"({state}, {t['read']}) -> ({t['to_state']}, {t['write']}, {t['action']})"
+
+
+def format_header(machine):
+    """Pure function: builds the header block as a single string."""
+    transition_lines = "\n".join(
+        format_transition(state, t)
+        for state, rules in machine['transitions'].items()
+        for t in rules
+    )
+    return "\n".join([
+        SEPARATOR,
+        f"*{machine['name']:^59}*",
+        SEPARATOR,
+        f"Alphabet: [ {', '.join(machine['alphabet'])} ]",
+        f"States: [ {', '.join(machine['states'])} ]",
+        f"Initial: {machine['initial']}",
+        f"Finals: [ {', '.join(machine['finals'])} ]",
+        transition_lines,
+        SEPARATOR,
+    ])
+
+
+def main():
+    args = sys.argv[1:]
+
+    if len(args) == 1 and args[0] in ("-h", "--help"):
+        print(USAGE)
+        sys.exit(0)
+
+    if len(args) != 2:
+        print(USAGE)
+        sys.exit(1)
+
+    json_path, input_str = args[0], args[1]
+
+    machine = load_machine(json_path)
+
+    if not validate_machine(machine):
         print("Error: Invalid Turing machine definition.")
         sys.exit(1)
 
-    # Now to check input vs alphabet. Blank character not allowed here
-    if machine_data["blank"] in input_str:
+    if machine["blank"] in input_str:
         print("Error: Input string cannot contain the blank character.")
         sys.exit(1)
 
-    # Make sure whatever characters we are inputting are in the alphabet
-    if not all(char in machine_data["alphabet"] for char in input_str):
+    if not all(c in machine["alphabet"] for c in input_str):
         print("Error: Input string contains characters not in the alphabet.")
         sys.exit(1)
 
-    tape = list(input_str) if input_str else [machine_data["blank"]]
-    if not tape:
-        tape = [machine_data["blank"]]
-    
-    separator = "*" * 61
-    print(separator)
-    print(f"*{machine_data['name']:^59}*")
-    print(separator)
-    print(f"Alphabet: [ {', '.join(machine_data['alphabet'])} ]")
-    print(f"States: [ {', '.join(machine_data['states'])} ]")
-    print(f"Initial: {machine_data['initial']}")
-    print(f"Finals: [ {', '.join(machine_data['finals'])} ]")
-    for state, rules in machine_data['transitions'].items():
-        for t in rules:
-            print(f"({state}, {t['read']}) -> ({t['to_state']}, {t['write']}, {t['action']})")
-    print(separator)
+    tape = list(input_str) if input_str else [machine["blank"]]
 
-    # Run the machine
+    print(format_header(machine))
+
     try:
-        result = run_machine(machine_data, tape, 0, machine_data["initial"])
+        result = run_machine(machine, tape, 0, machine["initial"])
         if result is not None:
             _, total_steps = result
             print(f"Machine halted after {total_steps} steps.")
-            print(f"First step: Initial State (Zero Index)")
-            print(f"Total steps is counted by: {total_steps + 1} - 1 (since we start at step 0)")
     except RecursionError:
         print("Error: Maximum recursion depth exceeded. Possible infinite loop.")
         sys.exit(1)
