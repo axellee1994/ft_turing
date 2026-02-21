@@ -2,19 +2,11 @@
     "name": "universal_turing_machine",
     "alphabet": ["1", ".", " ", "A", "B", "C", "H", "^", "|", "L", "R", "x", "y", "_"],
     "blank": "_",
-    "states": [
-        "fetch_state",
-        "find_head_marker",
-        "read_virtual_char",
-        "search_rule_start",
-        "match_state",
-        "match_read_symbol",
-        "skip_write_symbol",
-        "apply_move",
-        "update_new_state",
-        "rewind",
-        "HALT"
-    ],
+    "states": ["fetch_state", "find_head_marker", "read_virtual_char", "search_rule_start",
+               "match_state", "match_read_symbol", "skip_write_symbol",
+               "apply_w1", "apply_wdot", "apply_wsp",
+               "update_w1", "update_wdot", "update_wsp",
+               "rewind", "rewind_w1", "rewind_wdot", "rewind_wsp", "HALT"],
     "initial": "fetch_state",
     "finals": ["HALT"],
     "transitions": {
@@ -22,7 +14,7 @@
             { "read": "A", "to_state": "find_head_marker", "write": "x", "action": "RIGHT" },
             { "read": "B", "to_state": "find_head_marker", "write": "x", "action": "RIGHT" },
             { "read": "C", "to_state": "find_head_marker", "write": "x", "action": "RIGHT" },
-            { "read": "H", "to_state": "HALT",              "write": "H", "action": "RIGHT" }
+            { "read": "H", "to_state": "HALT",             "write": "H", "action": "RIGHT" }
         ],
         "find_head_marker": [
             { "read": "^", "to_state": "read_virtual_char", "write": "^", "action": "RIGHT" },
@@ -37,9 +29,9 @@
         ],
         "search_rule_start": [
             { "read": "|", "to_state": "match_state",       "write": "|", "action": "RIGHT" },
-            { "read": "1", "to_state": "search_rule_start",  "write": "1", "action": "RIGHT" },
-            { "read": ".", "to_state": "search_rule_start",  "write": ".", "action": "RIGHT" },
-            { "read": " ", "to_state": "search_rule_start",  "write": " ", "action": "RIGHT" }
+            { "read": "1", "to_state": "search_rule_start", "write": "1", "action": "RIGHT" },
+            { "read": ".", "to_state": "search_rule_start", "write": ".", "action": "RIGHT" },
+            { "read": " ", "to_state": "search_rule_start", "write": " ", "action": "RIGHT" }
         ],
         "match_state": [
             { "read": "A", "to_state": "match_read_symbol", "write": "A", "action": "RIGHT" },
@@ -52,33 +44,99 @@
             { "read": " ", "to_state": "skip_write_symbol", "write": " ", "action": "RIGHT" }
         ],
         "skip_write_symbol": [
-            { "read": "1", "to_state": "apply_move",        "write": "1", "action": "RIGHT" },
-            { "read": ".", "to_state": "apply_move",        "write": ".", "action": "RIGHT" },
-            { "read": " ", "to_state": "apply_move",        "write": " ", "action": "RIGHT" }
+            { "read": "1", "to_state": "apply_w1",   "write": "1", "action": "RIGHT" },
+            { "read": ".", "to_state": "apply_wdot", "write": ".", "action": "RIGHT" },
+            { "read": " ", "to_state": "apply_wsp",  "write": " ", "action": "RIGHT" }
         ],
-        "apply_move": [
-            { "read": "R", "to_state": "update_new_state",  "write": "R", "action": "RIGHT" },
-            { "read": "L", "to_state": "update_new_state",  "write": "L", "action": "RIGHT" }
+        "apply_w1": [
+            { "read": "R", "to_state": "update_w1", "write": "R", "action": "RIGHT" },
+            { "read": "L", "to_state": "update_w1", "write": "L", "action": "RIGHT" }
         ],
-        "update_new_state": [
-            { "read": "A", "to_state": "rewind",            "write": "A", "action": "LEFT" },
-            { "read": "B", "to_state": "rewind",            "write": "B", "action": "LEFT" },
-            { "read": "C", "to_state": "rewind",            "write": "C", "action": "LEFT" },
-            { "read": "H", "to_state": "HALT",              "write": "H", "action": "LEFT" }
+        "apply_wdot": [
+            { "read": "R", "to_state": "update_wdot", "write": "R", "action": "RIGHT" },
+            { "read": "L", "to_state": "update_wdot", "write": "L", "action": "RIGHT" }
+        ],
+        "apply_wsp": [
+            { "read": "R", "to_state": "update_wsp", "write": "R", "action": "RIGHT" },
+            { "read": "L", "to_state": "update_wsp", "write": "L", "action": "RIGHT" }
+        ],
+        "update_w1": [
+            { "read": "A", "to_state": "rewind_w1", "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind_w1", "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind_w1", "write": "C", "action": "LEFT" },
+            { "read": "H", "to_state": "HALT",      "write": "H", "action": "LEFT" }
+        ],
+        "update_wdot": [
+            { "read": "A", "to_state": "rewind_wdot", "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind_wdot", "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind_wdot", "write": "C", "action": "LEFT" },
+            { "read": "H", "to_state": "HALT",        "write": "H", "action": "LEFT" }
+        ],
+        "update_wsp": [
+            { "read": "A", "to_state": "rewind_wsp", "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind_wsp", "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind_wsp", "write": "C", "action": "LEFT" },
+            { "read": "H", "to_state": "HALT",       "write": "H", "action": "LEFT" }
+        ],
+        "rewind_w1": [
+            { "read": "1", "to_state": "rewind_w1",    "write": "1", "action": "LEFT" },
+            { "read": ".", "to_state": "rewind_w1",    "write": ".", "action": "LEFT" },
+            { "read": " ", "to_state": "rewind_w1",    "write": " ", "action": "LEFT" },
+            { "read": "R", "to_state": "rewind_w1",    "write": "R", "action": "LEFT" },
+            { "read": "L", "to_state": "rewind_w1",    "write": "L", "action": "LEFT" },
+            { "read": "A", "to_state": "rewind_w1",    "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind_w1",    "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind_w1",    "write": "C", "action": "LEFT" },
+            { "read": "H", "to_state": "rewind_w1",    "write": "H", "action": "LEFT" },
+            { "read": "|", "to_state": "rewind_w1",    "write": "|", "action": "LEFT" },
+            { "read": "^", "to_state": "rewind_w1",    "write": "^", "action": "LEFT" },
+            { "read": "y", "to_state": "rewind",       "write": "1", "action": "LEFT" },
+            { "read": "x", "to_state": "fetch_state",  "write": "x", "action": "RIGHT" }
+        ],
+        "rewind_wdot": [
+            { "read": "1", "to_state": "rewind_wdot",  "write": "1", "action": "LEFT" },
+            { "read": ".", "to_state": "rewind_wdot",  "write": ".", "action": "LEFT" },
+            { "read": " ", "to_state": "rewind_wdot",  "write": " ", "action": "LEFT" },
+            { "read": "R", "to_state": "rewind_wdot",  "write": "R", "action": "LEFT" },
+            { "read": "L", "to_state": "rewind_wdot",  "write": "L", "action": "LEFT" },
+            { "read": "A", "to_state": "rewind_wdot",  "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind_wdot",  "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind_wdot",  "write": "C", "action": "LEFT" },
+            { "read": "H", "to_state": "rewind_wdot",  "write": "H", "action": "LEFT" },
+            { "read": "|", "to_state": "rewind_wdot",  "write": "|", "action": "LEFT" },
+            { "read": "^", "to_state": "rewind_wdot",  "write": "^", "action": "LEFT" },
+            { "read": "y", "to_state": "rewind",       "write": ".", "action": "LEFT" },
+            { "read": "x", "to_state": "fetch_state",  "write": "x", "action": "RIGHT" }
+        ],
+        "rewind_wsp": [
+            { "read": "1", "to_state": "rewind_wsp",   "write": "1", "action": "LEFT" },
+            { "read": ".", "to_state": "rewind_wsp",   "write": ".", "action": "LEFT" },
+            { "read": " ", "to_state": "rewind_wsp",   "write": " ", "action": "LEFT" },
+            { "read": "R", "to_state": "rewind_wsp",   "write": "R", "action": "LEFT" },
+            { "read": "L", "to_state": "rewind_wsp",   "write": "L", "action": "LEFT" },
+            { "read": "A", "to_state": "rewind_wsp",   "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind_wsp",   "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind_wsp",   "write": "C", "action": "LEFT" },
+            { "read": "H", "to_state": "rewind_wsp",   "write": "H", "action": "LEFT" },
+            { "read": "|", "to_state": "rewind_wsp",   "write": "|", "action": "LEFT" },
+            { "read": "^", "to_state": "rewind_wsp",   "write": "^", "action": "LEFT" },
+            { "read": "y", "to_state": "rewind",       "write": " ", "action": "LEFT" },
+            { "read": "x", "to_state": "fetch_state",  "write": "x", "action": "RIGHT" }
         ],
         "rewind": [
-            { "read": "1", "to_state": "rewind",            "write": "1", "action": "LEFT" },
-            { "read": ".", "to_state": "rewind",            "write": ".", "action": "LEFT" },
-            { "read": " ", "to_state": "rewind",            "write": " ", "action": "LEFT" },
-            { "read": "R", "to_state": "rewind",            "write": "R", "action": "LEFT" },
-            { "read": "L", "to_state": "rewind",            "write": "L", "action": "LEFT" },
-            { "read": "A", "to_state": "rewind",            "write": "A", "action": "LEFT" },
-            { "read": "B", "to_state": "rewind",            "write": "B", "action": "LEFT" },
-            { "read": "C", "to_state": "rewind",            "write": "C", "action": "LEFT" },
-            { "read": "|", "to_state": "rewind",            "write": "|", "action": "LEFT" },
-            { "read": "y", "to_state": "rewind",            "write": "y", "action": "LEFT" },
-            { "read": "^", "to_state": "rewind",            "write": "^", "action": "LEFT" },
-            { "read": "x", "to_state": "fetch_state",       "write": "x", "action": "RIGHT" } 
+            { "read": "1", "to_state": "rewind",       "write": "1", "action": "LEFT" },
+            { "read": ".", "to_state": "rewind",       "write": ".", "action": "LEFT" },
+            { "read": " ", "to_state": "rewind",       "write": " ", "action": "LEFT" },
+            { "read": "R", "to_state": "rewind",       "write": "R", "action": "LEFT" },
+            { "read": "L", "to_state": "rewind",       "write": "L", "action": "LEFT" },
+            { "read": "A", "to_state": "rewind",       "write": "A", "action": "LEFT" },
+            { "read": "B", "to_state": "rewind",       "write": "B", "action": "LEFT" },
+            { "read": "C", "to_state": "rewind",       "write": "C", "action": "LEFT" },
+            { "read": "H", "to_state": "rewind",       "write": "H", "action": "LEFT" },
+            { "read": "|", "to_state": "rewind",       "write": "|", "action": "LEFT" },
+            { "read": "y", "to_state": "rewind",       "write": "y", "action": "LEFT" },
+            { "read": "^", "to_state": "rewind",       "write": "^", "action": "LEFT" },
+            { "read": "x", "to_state": "fetch_state",  "write": "x", "action": "RIGHT" }
         ]
     }
 }
