@@ -1,14 +1,27 @@
-# Add to .PHONY at the top
-.PHONY: all clean test run test_unary_add test_0n1n test_02n test_palindrome test_universal
+.PHONY: all clean fclean re test test_unary_add test_0n1n test_02n test_palindrome test_universal
 
 PYTHON := python3
 NAME := ft_turing
 MAIN := $(NAME).py
 
-all: run
+all: $(NAME)
 
-run:
-	$(PYTHON) $(MAIN)
+$(NAME): $(MAIN)
+	@echo "#!/bin/bash" > $(NAME)
+	@echo '$(PYTHON) $(MAIN) "$$@"' >> $(NAME)
+	@chmod +x $(NAME)
+	@echo "$(NAME) executable successfully created!"
+
+clean:
+	@find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	@find . -type f -name "*.pyc" -delete
+	@find . -type f -name "*.pyo" -delete
+
+fclean: clean
+	@rm -f $(NAME)
+	@echo "$(NAME) removed."
+
+re: fclean all
 
 test_0n1n:
 	@echo "--- 0n1n: valid 0011 (expect y) ---"
@@ -65,8 +78,8 @@ test_unary_add:
 	$(PYTHON) $(MAIN) machines/unary_add.json "1111.1"
 
 test_unary_sub:
-	@echo "--- unary_sub: 1-1=1 (expect 0) ---"
-	$(PYTHON) $(MAIN) machines/unary_sub.json "1-1=1"
+	@echo "--- unary_sub: 1-1= (expect 0) ---"
+	$(PYTHON) $(MAIN) machines/unary_sub.json "1-1="
 	@echo "--- unary_sub: 111-11= (expect 1) ---"
 	$(PYTHON) $(MAIN) machines/unary_sub.json "111-11="
 	@echo "--- unary_sub: 11111-111= (expect 11) ---"
@@ -80,8 +93,3 @@ test_universal:
 test: test_unary_add test_unary_sub test_palindrome test_0n1n test_02n test_universal
 	@echo "--- help ---"
 	$(PYTHON) $(MAIN) -h
-
-clean:
-	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name "*.pyc" -delete
-	find . -type f -name "*.pyo" -delete
