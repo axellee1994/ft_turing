@@ -32,36 +32,43 @@ def step(machine, tape, head, state):
     else:
         return (tape_written, new_head, rule['to_state'])
 
-def print_tape_state(tape, head, state):
+def format_tape_state(tape, head, state, rule=None):
     """
-    Prints the tape with the head surrounding the current character.
-    Example: [11<1>1=..] (state)
+    Returns the tape line with head marker and optional transition.
+    Final state:  [11<1>1=..] (state)
+    Active step:  [11<1>1=..] (state, read) -> (to_state, write, action)
     """
     formatted_tape = "".join(
-        f"<{char}>" if i == head else char 
+        f"<{char}>" if i == head else char
         for i, char in enumerate(tape)
     )
-    
-    # Print the final string
-    print(f"[{formatted_tape}] ({state})")
+    if rule:
+        return (f"[{formatted_tape}] ({state}, {rule['read']}) -> "
+                f"({rule['to_state']}, {rule['write']}, {rule['action']})")
+    return f"[{formatted_tape}] ({state})"
 
 def run_machine(machine, tape, head, state, step_count=0):
     """
     Recursive driver that runs the machine until HALT or BLOCK.
     """
-    print_tape_state(tape, head, state)
-
-    # Check if we are in a FINAL state 
+    # Check if we are in a FINAL state
     if state in machine['finals']:
+        print(format_tape_state(tape, head, state))
         return tape, step_count
 
-    # Calculate next step
-    result = step(machine, tape, head, state)
+    # Look up the transition rule
+    read_char = tape[head]
+    rule = next(
+        (t for t in machine['transitions'].get(state, []) if t['read'] == read_char),
+        None
+    )
+
+    print(format_tape_state(tape, head, state, rule))
 
     # Check for blocking (Undefined transition)
-    if result is None:
+    if rule is None:
         print("Error: Machine blocked (undefined transition).")
         return None
 
-    new_tape, new_head, new_state = result
+    new_tape, new_head, new_state = step(machine, tape, head, state)
     return run_machine(machine, new_tape, new_head, new_state, step_count + 1)
