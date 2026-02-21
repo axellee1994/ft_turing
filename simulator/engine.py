@@ -5,7 +5,6 @@ def step(machine, tape, head, state):
     """
     read_char = tape[head]
 
-    # Search transitions[state] for a rule where 'read' matches read_char
     if state not in machine['transitions']:
         return None
         
@@ -14,7 +13,6 @@ def step(machine, tape, head, state):
     if not rule:
         return None
 
-    # Create new list with the new char
     new_char = rule['write']
     tape_written = tape[:head] + [new_char] + tape[head+1:]
 
@@ -22,7 +20,7 @@ def step(machine, tape, head, state):
     direction = rule['action']
     new_head = head + 1 if direction == 'RIGHT' else head - 1
 
-    # Expand Tape (Infinite Tape Logic)
+    # Expand Tape
     blank = machine['blank']
     
     if new_head < 0:
@@ -65,7 +63,7 @@ def run_machine(machine, tape, head, state, step_count=0):
 
     print(format_tape_state(tape, head, state, rule))
 
-    # Check for blocking (Undefined transition)
+    # Check for blocking
     if rule is None:
         print("Error: Machine blocked (undefined transition).")
         return None

@@ -12,19 +12,14 @@ def validate_machine(data):
         return False
 
     checks = [
-        # Alphabet characters are single characters
         all(len(char) == 1 for char in data['alphabet']),
-
-        # Blank symbol is part of the alphabet
         data['blank'] in set_alphabet,
-
-        # Initial state is part of the states
         data['initial'] in set_states,
 
         # Final states are a sub-list of states
         all(state in set_states for state in data['finals']),
 
-        # 5. Transitions logic check
+        # Transitions logic check
         all(
             # Key must be a valid state 
             state in set_states and isinstance(rules, list) and
