@@ -92,9 +92,9 @@ def main():
     print(format_header(machine))
 
     try:
-        result = run_machine(machine, tape, 0, machine["initial"])
-        if result is not None:
-            _, total_steps = result
+        lines, result_tape, total_steps = run_machine(machine, tape, 0, machine["initial"])
+        print("\n".join(lines))
+        if result_tape is not None:
             print(f"Machine halted after {total_steps} steps.")
     except RecursionError:
         print("Error: Maximum recursion depth exceeded. Possible infinite loop.")

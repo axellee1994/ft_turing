@@ -48,25 +48,23 @@ def format_tape_state(tape, head, state, rule=None):
 def run_machine(machine, tape, head, state, step_count=0):
     """
     Recursive driver that runs the machine until HALT or BLOCK.
+    Returns (lines, tape, step_count) on halt, (lines, None, step_count) on block.
+    All output lines are collected and returned — no side effects.
     """
-    # Check if we are in a FINAL state
     if state in machine['finals']:
-        print(format_tape_state(tape, head, state))
-        return tape, step_count
+        return ([format_tape_state(tape, head, state)], tape, step_count)
 
-    # Look up the transition rule
     read_char = tape[head]
     rule = next(
         (t for t in machine['transitions'].get(state, []) if t['read'] == read_char),
         None
     )
 
-    print(format_tape_state(tape, head, state, rule))
+    line = format_tape_state(tape, head, state, rule)
 
-    # Check for blocking
     if rule is None:
-        print("Error: Machine blocked (undefined transition).")
-        return None
+        return ([line, "Error: Machine blocked (undefined transition)."], None, step_count)
 
     new_tape, new_head, new_state = step(machine, tape, head, state)
-    return run_machine(machine, new_tape, new_head, new_state, step_count + 1)
+    rest_lines, result_tape, final_count = run_machine(machine, new_tape, new_head, new_state, step_count + 1)
+    return ([line] + rest_lines, result_tape, final_count)
