@@ -55,7 +55,7 @@ test_unary_sub:
 	$(PYTHON) $(MAIN) machines/unary_sub.json "1111-1="
 
 test_universal:
-	$(PYTHON) $(MAIN) machines/universal.json "A^11.111|A11RAA.1RBB11RBB 1LCC1 LCH"
+	$(PYTHON) $(MAIN) machines/universal.json "A^11.111|A11RAA.1RBB11RBB  LCC1 LH"
 
 test: test_unary_add test_unary_sub test_palindrome test_0n1n test_02n test_universal
 	$(PYTHON) $(MAIN) -h
