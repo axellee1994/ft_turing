@@ -78,6 +78,10 @@ def main():
         print("Error: Invalid Turing machine definition.")
         sys.exit(1)
 
+    if not input_str:
+        print("Error: Input string cannot be empty.")
+        sys.exit(1)
+
     if machine["blank"] in input_str:
         print("Error: Input string cannot contain the blank character.")
         sys.exit(1)
