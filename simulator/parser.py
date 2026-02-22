@@ -12,7 +12,7 @@ def validate_machine(data: dict) -> bool:
         return False
 
     checks = [
-        all(len(char) == 1 for char in data['alphabet']),
+        all(isinstance(char, str) and len(char) == 1 for char in data['alphabet']),
         data['blank'] in set_alphabet,
         data['initial'] in set_states,
 
