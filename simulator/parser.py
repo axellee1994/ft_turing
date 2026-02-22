@@ -1,4 +1,4 @@
-def validate_machine(data):
+def validate_machine(data: dict) -> bool:
     required_keys = ['name', 'alphabet', 'blank', 'states', 'initial', 'finals', 'transitions']
     if not isinstance(data,dict) or not all(key in data for key in required_keys):
         return False

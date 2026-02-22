@@ -1,4 +1,7 @@
-def step(machine, tape, head, rule):
+from typing import Optional
+
+
+def step(machine: dict, tape: list, head: int, rule: dict) -> tuple[list, int, str]:
     """
     Applies a transition rule to the tape and returns the new configuration.
     Returns: (new_tape, new_head, new_state)
@@ -15,7 +18,7 @@ def step(machine, tape, head, rule):
     else:
         return (tape_written, new_head, rule['to_state'])
 
-def format_tape_state(tape, head, state, rule=None):
+def format_tape_state(tape: list, head: int, state: str, rule: Optional[dict] = None) -> str:
     """
     Returns the tape line with head marker and optional transition.
     Final state:  [11<1>1=..] (state)
@@ -30,7 +33,7 @@ def format_tape_state(tape, head, state, rule=None):
                 f"({rule['to_state']}, {rule['write']}, {rule['action']})")
     return f"[{formatted_tape}] ({state})"
 
-def run_machine(machine, tape, head, state, step_count=0):
+def run_machine(machine: dict, tape: list, head: int, state: str, step_count: int = 0) -> tuple[list, Optional[list], int]:
     """
     Recursive driver that runs the machine until HALT or BLOCK.
     Returns (lines, tape, step_count) on halt, (lines, None, step_count) on block.
