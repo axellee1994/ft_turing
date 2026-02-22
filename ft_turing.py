@@ -63,10 +63,13 @@ def format_header(machine: dict) -> str:
 def input_error(machine: dict, input_str: str) -> Optional[str]:
     """Pure function: returns an error message if the input is invalid, else None."""
     return (
-        "Input string cannot be empty." if not input_str else
-        "Input string cannot contain the blank character." if machine["blank"] in input_str else
-        "Input string contains characters not in the alphabet." if not all(c in machine["alphabet"] for c in input_str) else
-        None
+        "Input string cannot be empty."
+        if not input_str
+        else "Input string cannot contain the blank character."
+        if machine["blank"] in input_str
+        else "Input string contains characters not in the alphabet."
+        if not all(c in machine["alphabet"] for c in input_str)
+        else None
     )
 
 
@@ -74,18 +77,29 @@ def simulate(machine: dict, input_str: str) -> tuple[list[str], int]:
     """Pure function: runs the machine and returns (output_lines, exit_code)."""
     tape = list(input_str)
     try:
-        lines, result_tape, total_steps = run_machine(machine, tape, 0, machine["initial"])
-        halt_line = [f"Machine halted after {total_steps} steps."] if result_tape is not None else []
+        lines, result_tape, total_steps = run_machine(
+            machine, tape, 0, machine["initial"]
+        )
+        halt_line = (
+            [f"Machine halted after {total_steps} steps."]
+            if result_tape is not None
+            else []
+        )
         return ([format_header(machine)] + lines + halt_line, 0)
     except RecursionError:
-        return ([format_header(machine), "Error: Maximum recursion depth exceeded. Possible infinite loop."], 1)
+        return (
+            [
+                format_header(machine),
+                "Error: Maximum recursion depth exceeded. Possible infinite loop.",
+            ],
+            1,
+        )
 
 
 def run(args: list[str]) -> tuple[list[str], int]:
     """Pure function: maps CLI args to (output_lines, exit_code). No side effects."""
     if len(args) == 1 and args[0] in ("-h", "--help"):
         return ([USAGE], 0)
-
     if len(args) != 2:
         return ([USAGE], 1)
 
