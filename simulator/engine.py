@@ -1,28 +1,13 @@
-def step(machine, tape, head, state):
+def step(machine, tape, head, rule):
     """
-    Calculates the next single state of the machine.
-    Returns: (new_tape, new_head, new_state) or None if blocked.
+    Applies a transition rule to the tape and returns the new configuration.
+    Returns: (new_tape, new_head, new_state)
     """
-    read_char = tape[head]
+    tape_written = tape[:head] + [rule['write']] + tape[head+1:]
 
-    if state not in machine['transitions']:
-        return None
-        
-    rule = next((t for t in machine['transitions'][state] if t['read'] == read_char), None)
-    
-    if not rule:
-        return None
+    new_head = head + 1 if rule['action'] == 'RIGHT' else head - 1
 
-    new_char = rule['write']
-    tape_written = tape[:head] + [new_char] + tape[head+1:]
-
-    # Move Head
-    direction = rule['action']
-    new_head = head + 1 if direction == 'RIGHT' else head - 1
-
-    # Expand Tape
     blank = machine['blank']
-    
     if new_head < 0:
         return ([blank] + tape_written, 0, rule['to_state'])
     elif new_head >= len(tape_written):
@@ -65,6 +50,6 @@ def run_machine(machine, tape, head, state, step_count=0):
     if rule is None:
         return ([line, "Error: Machine blocked (undefined transition)."], None, step_count)
 
-    new_tape, new_head, new_state = step(machine, tape, head, state)
+    new_tape, new_head, new_state = step(machine, tape, head, rule)
     rest_lines, result_tape, final_count = run_machine(machine, new_tape, new_head, new_state, step_count + 1)
     return ([line] + rest_lines, result_tape, final_count)

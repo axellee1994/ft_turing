@@ -3,8 +3,6 @@ import json
 from simulator.parser import validate_machine
 from simulator.engine import run_machine
 
-sys.setrecursionlimit(100000)
-
 USAGE = "\n".join([
     "usage: ft_turing [-h] jsonfile input",
     "",
@@ -61,6 +59,7 @@ def format_header(machine):
 
 
 def main():
+    sys.setrecursionlimit(100000)
     args = sys.argv[1:]
 
     if len(args) == 1 and args[0] in ("-h", "--help"):
