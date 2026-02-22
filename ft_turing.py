@@ -60,59 +60,57 @@ def format_header(machine: dict) -> str:
     )
 
 
-def main():
-    """Possible to avoid imperative logic? Not sure."""
-    sys.setrecursionlimit(100000)
-    args = sys.argv[1:]
+def input_error(machine: dict, input_str: str) -> Optional[str]:
+    """Pure function: returns an error message if the input is invalid, else None."""
+    return (
+        "Input string cannot be empty." if not input_str else
+        "Input string cannot contain the blank character." if machine["blank"] in input_str else
+        "Input string contains characters not in the alphabet." if not all(c in machine["alphabet"] for c in input_str) else
+        None
+    )
 
+
+def simulate(machine: dict, input_str: str) -> tuple[list[str], int]:
+    """Pure function: runs the machine and returns (output_lines, exit_code)."""
+    tape = list(input_str)
+    try:
+        lines, result_tape, total_steps = run_machine(machine, tape, 0, machine["initial"])
+        halt_line = [f"Machine halted after {total_steps} steps."] if result_tape is not None else []
+        return ([format_header(machine)] + lines + halt_line, 0)
+    except RecursionError:
+        return ([format_header(machine), "Error: Maximum recursion depth exceeded. Possible infinite loop."], 1)
+
+
+def run(args: list[str]) -> tuple[list[str], int]:
+    """Pure function: maps CLI args to (output_lines, exit_code). No side effects."""
     if len(args) == 1 and args[0] in ("-h", "--help"):
-        print(USAGE)
-        sys.exit(0)
+        return ([USAGE], 0)
 
     if len(args) != 2:
-        print(USAGE)
-        sys.exit(1)
+        return ([USAGE], 1)
 
     json_path, input_str = args[0], args[1]
 
-    machine, load_error = load_machine(json_path)
-    if load_error:
-        print(f"Error: {load_error}")
-        sys.exit(1)
+    machine, load_err = load_machine(json_path)
+    if load_err:
+        return ([f"Error: {load_err}"], 1)
 
-    if not validate_machine(machine):
-        print("Error: Invalid Turing machine definition.")
-        sys.exit(1)
+    validation_err = validate_machine(machine)
+    if validation_err:
+        return ([f"Error: {validation_err}"], 1)
 
-    if not input_str:
-        print("Error: Input string cannot be empty.")
-        sys.exit(1)
+    err = input_error(machine, input_str)
+    if err:
+        return ([f"Error: {err}"], 1)
 
-    if machine["blank"] in input_str:
-        print("Error: Input string cannot contain the blank character.")
-        sys.exit(1)
+    return simulate(machine, input_str)
 
-    if not all(c in machine["alphabet"] for c in input_str):
-        print("Error: Input string contains characters not in the alphabet.")
-        sys.exit(1)
 
-    tape = list(input_str) if input_str else [machine["blank"]]
-
-    print(format_header(machine))
-
-    try:
-        lines, result_tape, total_steps = run_machine(
-            machine, tape, 0, machine["initial"]
-        )
-        print("\n".join(lines))
-        if result_tape is not None:
-            print(f"Machine halted after {total_steps} steps.")
-    except RecursionError:
-        print("Error: Maximum recursion depth exceeded. Possible infinite loop.")
-        sys.exit(1)
-    except KeyboardInterrupt:
-        print("Execution interrupted by user.")
-        sys.exit(1)
+def main():
+    sys.setrecursionlimit(100000)
+    lines, code = run(sys.argv[1:])
+    print("\n".join(lines))
+    sys.exit(code)
 
 
 if __name__ == "__main__":
