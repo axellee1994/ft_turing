@@ -85,7 +85,7 @@ def simulate(machine: dict, input_str: str) -> tuple[list[str], int]:
             if result_tape is not None
             else []
         )
-        return ([format_header(machine)] + lines + halt_line, 0)
+        return ([format_header(machine)] + lines + halt_line, 0 if result_tape is not None else 1)
     except RecursionError:
         return (
             [
