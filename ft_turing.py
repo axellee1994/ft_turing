@@ -2,7 +2,7 @@ import sys
 import json
 from typing import Optional
 from simulator.parser import validate_machine
-from simulator.engine import run_machine
+from simulator.engine import run_machine, MAX_STEPS
 
 USAGE = "\n".join(
     [
@@ -76,25 +76,15 @@ def input_error(machine: dict, input_str: str) -> Optional[str]:
 def simulate(machine: dict, input_str: str) -> tuple[list[str], int]:
     """Pure function: runs the machine and returns (output_lines, exit_code)."""
     tape = list(input_str)
-    try:
-        lines, result_tape, total_steps = run_machine(
-            machine, tape, 0, machine["initial"]
-        )
-        halt_line = (
-            [f"Machine halted after {total_steps} steps.", SEPARATOR]
-            if result_tape is not None
-            else [SEPARATOR]
-        )
-        return ([format_header(machine)] + lines + halt_line, 0 if result_tape is not None else 1)
-    except RecursionError:
-        return (
-            [
-                format_header(machine),
-                "Error: Maximum recursion depth exceeded. Possible infinite loop.",
-                SEPARATOR,
-            ],
-            1,
-        )
+    lines, result_tape, total_steps = run_machine(
+        machine, tape, 0, machine["initial"]
+    )
+    halt_line = (
+        [f"Machine halted after {total_steps} steps.", SEPARATOR]
+        if result_tape is not None
+        else [SEPARATOR]
+    )
+    return ([format_header(machine)] + lines + halt_line, 0 if result_tape is not None else 1)
 
 
 def run(args: list[str]) -> tuple[list[str], int]:
@@ -122,7 +112,7 @@ def run(args: list[str]) -> tuple[list[str], int]:
 
 
 def main():
-    sys.setrecursionlimit(100000)
+    sys.setrecursionlimit(MAX_STEPS + 1000)
     lines, code = run(sys.argv[1:])
     print("\n".join(lines))
     sys.exit(code)

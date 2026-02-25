@@ -35,14 +35,23 @@ def format_tape_state(
     return f"[{formatted_tape}] ({state})"
 
 
+MAX_STEPS = 10_000
+
+
 def run_machine(
     machine: dict, tape: list, head: int, state: str, step_count: int = 0
 ) -> tuple[list, Optional[list], int]:
     """
     Recursive driver that runs the machine until HALT or BLOCK.
     Returns (lines, tape, step_count) on halt, (lines, None, step_count) on block.
-    All output lines are collected and returned — no side effects.
     """
+    if step_count >= MAX_STEPS:
+        return (
+            [f"Error: Step limit ({MAX_STEPS}) reached. Possible infinite loop."],
+            None,
+            step_count,
+        )
+
     if state in machine["finals"]:
         return ([format_tape_state(tape, head, state)], tape, step_count)
 
@@ -66,4 +75,3 @@ def run_machine(
         machine, new_tape, new_head, new_state, step_count + 1
     )
     return ([line] + rest_lines, result_tape, final_count)
-
