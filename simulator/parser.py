@@ -89,10 +89,10 @@ def validate_machine(data: dict) -> Optional[str]:
     if data["initial"] not in set(data["states"]):
         return f"Field 'initial' ('{data['initial']}') is not in 'states'."
 
-    if not isinstance(data["finals"], list) or not all(
-        s in set(data["states"]) for s in data["finals"]
-    ):
-        invalid = [s for s in data.get("finals", []) if s not in set(data["states"])]
+    if not isinstance(data["finals"], list):
+        return "Field 'finals' must be a list."
+    if not all(s in set(data["states"]) for s in data["finals"]):
+        invalid = [s for s in data["finals"] if s not in set(data["states"])]
         return f"Field 'finals' contains state(s) not in 'states': {invalid}."
     if not isinstance(data["transitions"], dict):
         return "Field 'transitions' must be a JSON object."
