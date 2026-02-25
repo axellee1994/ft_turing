@@ -1,7 +1,7 @@
 {
     "name": "unary_add",
-    "alphabet": ["1", ".", " "],
-    "blank": " ",
+    "alphabet": ["1", ".", "_"],
+    "blank": "_",
     "states": ["scanright", "to_end", "cleanup", "HALT"],
     "initial": "scanright",
     "finals": ["HALT"],
@@ -12,10 +12,10 @@
         ],
         "to_end": [
             { "read": "1", "to_state": "to_end",    "write": "1", "action": "RIGHT" },
-            { "read": " ", "to_state": "cleanup",   "write": " ", "action": "LEFT" }
+            { "read": "_", "to_state": "cleanup",   "write": "_", "action": "LEFT" }
         ],
         "cleanup": [
-            { "read": "1", "to_state": "HALT",      "write": " ", "action": "LEFT" }
+            { "read": "1", "to_state": "HALT",      "write": "_", "action": "LEFT" }
         ]
     }
 }
