@@ -81,9 +81,9 @@ def simulate(machine: dict, input_str: str) -> tuple[list[str], int]:
             machine, tape, 0, machine["initial"]
         )
         halt_line = (
-            [f"Machine halted after {total_steps} steps."]
+            [f"Machine halted after {total_steps} steps.", SEPARATOR]
             if result_tape is not None
-            else []
+            else [SEPARATOR]
         )
         return ([format_header(machine)] + lines + halt_line, 0 if result_tape is not None else 1)
     except RecursionError:
@@ -91,6 +91,7 @@ def simulate(machine: dict, input_str: str) -> tuple[list[str], int]:
             [
                 format_header(machine),
                 "Error: Maximum recursion depth exceeded. Possible infinite loop.",
+                SEPARATOR,
             ],
             1,
         )
