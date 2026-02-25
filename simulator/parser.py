@@ -73,6 +73,9 @@ def validate_machine(data: dict) -> Optional[str]:
     if missing:
         return f"Missing required field(s): {', '.join(missing)}."
 
+    if not isinstance(data["name"], str):
+        return "Field 'name' must be a string."
+
     if not isinstance(data["alphabet"], list) or not all(
         isinstance(c, str) and len(c) == 1 for c in data["alphabet"]
     ):
@@ -85,6 +88,12 @@ def validate_machine(data: dict) -> Optional[str]:
 
     if not isinstance(data["blank"], str) or data["blank"] not in set(data["alphabet"]):
         return "Field 'blank' must be a single character present in the alphabet."
+    
+    if not isinstance(data["initial"], str) or data["initial"] not in set(data["states"]):
+        return "Field 'initial' must be a string present in the states."
+    
+    if not isinstance(data["finals"], list) or not all(isinstance(s, str) for s in data["finals"]):
+        return "Field 'finals' must be a list of strings."
 
     if data["initial"] not in set(data["states"]):
         return f"Field 'initial' ('{data['initial']}') is not in 'states'."
