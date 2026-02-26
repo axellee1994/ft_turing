@@ -18,7 +18,7 @@ USAGE = "\n".join(
     ]
 )
 
-SEPARATOR = "*" * 61
+SEPARATOR = "*" * 80
 
 
 def load_machine(path: str) -> tuple[Optional[dict], Optional[str]]:
@@ -48,7 +48,7 @@ def format_header(machine: dict) -> str:
     return "\n".join(
         [
             SEPARATOR,
-            f"*{machine['name']:^59}*",
+            f"*{machine['name']:^78}*",
             SEPARATOR,
             f"Alphabet: [ {', '.join(machine['alphabet'])} ]",
             f"States: [ {', '.join(machine['states'])} ]",
