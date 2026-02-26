@@ -48,7 +48,9 @@ def format_header(machine: dict) -> str:
     return "\n".join(
         [
             SEPARATOR,
+            f"*{'':^78}*",
             f"*{machine['name']:^78}*",
+            f"*{'':^78}*",
             SEPARATOR,
             f"Alphabet: [ {', '.join(machine['alphabet'])} ]",
             f"States: [ {', '.join(machine['states'])} ]",
